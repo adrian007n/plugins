@@ -31,17 +31,17 @@ dependencies:
     git:
       url: https://github.com/adrian007n/plugins.git
       ref: combine-image_video
-      path: packages/image_picker/image_picker/image_picker_android
+      path: packages/image_picker/image_picker_android
   image_picker_for_web:
     git:
       url: https://github.com/adrian007n/plugins.git
       ref: combine-image_video
-      path: packages/image_picker/image_picker/image_picker_for_web
+      path: packages/image_picker/image_picker_for_web
   image_picker_ios:
     git:
       url: https://github.com/adrian007n/plugins.git
       ref: combine-image_video
-      path: packages/image_picker/image_picker/image_picker_ios
+      path: packages/image_picker/image_picker_ios
   image_picker_platform_interface: ^2.6.1
 
 dev_dependencies:
