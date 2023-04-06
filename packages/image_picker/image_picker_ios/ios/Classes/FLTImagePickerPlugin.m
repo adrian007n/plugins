@@ -104,12 +104,16 @@ typedef NS_ENUM(NSInteger, ImagePickerClassType) { UIImagePickerClassType, PHPic
   }
 }
 
-- (void)launchPHPickerWithContext:(nonnull FLTImagePickerMethodCallContext *)context
+//- (void)launchPHPickerWithContext:(nonnull FLTImagePickerMethodCallContext *)context
+- (void)launchPHPickerWithContext:(nonnull FLTImagePickerMethodCallContext *)context showMulti:(bool) showMulti
     API_AVAILABLE(ios(14)) {
   PHPickerConfiguration *config =
       [[PHPickerConfiguration alloc] initWithPhotoLibrary:PHPhotoLibrary.sharedPhotoLibrary];
   config.selectionLimit = context.maxImageCount;
-  config.filter = [PHPickerFilter imagesFilter];
+//  config.filter = [PHPickerFilter imagesFilter];
+  if (!showMulti) {
+    config.filter = [PHPickerFilter imagesFilter];
+  }
 
   _pickerViewController = [[PHPickerViewController alloc] initWithConfiguration:config];
   _pickerViewController.delegate = self;
@@ -181,7 +185,8 @@ typedef NS_ENUM(NSInteger, ImagePickerClassType) { UIImagePickerClassType, PHPic
 
   if (source.type == FLTSourceTypeGallery) {  // Capture is not possible with PHPicker
     if (@available(iOS 14, *)) {
-      [self launchPHPickerWithContext:context];
+//      [self launchPHPickerWithContext:context];
+      [self launchPHPickerWithContext:context showMulti: false];
     } else {
       [self launchUIImagePickerWithSource:source context:context];
     }
@@ -202,7 +207,8 @@ typedef NS_ENUM(NSInteger, ImagePickerClassType) { UIImagePickerClassType, PHPic
   context.requestFullMetadata = [fullMetadata boolValue];
 
   if (@available(iOS 14, *)) {
-    [self launchPHPickerWithContext:context];
+//    [self launchPHPickerWithContext:context];
+    [self launchPHPickerWithContext:context showMulti:true];
   } else {
     // Camera is ignored for gallery mode, so the value here is arbitrary.
     [self launchUIImagePickerWithSource:[FLTSourceSpecification makeWithType:FLTSourceTypeGallery
@@ -230,7 +236,7 @@ typedef NS_ENUM(NSInteger, ImagePickerClassType) { UIImagePickerClassType, PHPic
   imagePickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
   imagePickerController.delegate = self;
   imagePickerController.mediaTypes = @[
-    (NSString *)kUTTypeMovie, (NSString *)kUTTypeAVIMovie, (NSString *)kUTTypeVideo,
+    (NSString *)kUTTypeImage, (NSString *)kUTTypeMovie, (NSString *)kUTTypeAVIMovie, (NSString *)kUTTypeVideo,
     (NSString *)kUTTypeMPEG4
   ];
   imagePickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;

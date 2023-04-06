@@ -3,6 +3,7 @@ description: Web platform implementation of image_picker
 repository: https://github.com/flutter/plugins/tree/main/packages/image_picker/image_picker_for_web
 issue_tracker: https://github.com/flutter/flutter/issues?q=is%3Aissue+is%3Aopen+label%3A%22p%3A+image_picker%22
 version: 2.1.10
+publish_to: none
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -21,7 +22,9 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  image_picker_platform_interface: ^2.2.0
+#  image_picker_platform_interface: ^2.2.0
+  image_picker_platform_interface:
+    path: ../image_picker_platform_interface
 
 dev_dependencies:
   flutter_test:

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.net.URLConnection;
 
 enum CameraDevice {
   REAR,
@@ -336,7 +337,8 @@ public class ImagePickerDelegate
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
       pickImageIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
     }
-    pickImageIntent.setType("image/*");
+//    pickImageIntent.setType("image/*");
+    pickImageIntent.setType("image/* video/*");
 
     activity.startActivityForResult(pickImageIntent, REQUEST_CODE_CHOOSE_MULTI_IMAGE_FROM_GALLERY);
   }
@@ -560,21 +562,39 @@ public class ImagePickerDelegate
     // User cancelled taking a picture.
     finishWithSuccess(null);
   }
+  private boolean isImageFile(String path) {
+    String mimeType = URLConnection.guessContentTypeFromName(path);
+    return mimeType != null && mimeType.startsWith("image");
+  }
 
   private void handleMultiImageResult(
       ArrayList<String> paths, boolean shouldDeleteOriginalIfScaled) {
     if (methodCall != null) {
       ArrayList<String> finalPath = new ArrayList<>();
       for (int i = 0; i < paths.size(); i++) {
-        String finalImagePath = getResizedImagePath(paths.get(i));
+//        String finalImagePath = getResizedImagePath(paths.get(i));
+//
+//        //delete original file if scaled
+//        if (finalImagePath != null
+//            && !finalImagePath.equals(paths.get(i))
+//            && shouldDeleteOriginalIfScaled) {
+//          new File(paths.get(i)).delete();
+//        }
+//        finalPath.add(i, finalImagePath);
 
-        //delete original file if scaled
-        if (finalImagePath != null
-            && !finalImagePath.equals(paths.get(i))
-            && shouldDeleteOriginalIfScaled) {
-          new File(paths.get(i)).delete();
+        if (isImageFile(paths.get(i))) {
+          String finalImagePath = getResizedImagePath(paths.get(i));
+          //delete original file if scaled
+          if (finalImagePath != null
+                  && !finalImagePath.equals(paths.get(i))
+                  && shouldDeleteOriginalIfScaled) {
+            new File(paths.get(i)).delete();
+          }
+          finalPath.add(i, finalImagePath);
+        } else {
+          finalPath.add(i, paths.get(i));
         }
-        finalPath.add(i, finalImagePath);
+
       }
       finishWithListSuccess(finalPath);
     } else {

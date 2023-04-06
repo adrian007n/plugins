@@ -107,6 +107,20 @@ API_AVAILABLE(ios(14))
                                     [self completeOperationWithPath:nil error:flutterError];
                                   }
                                 }];
+    } else if ([self.result.itemProvider hasItemConformingToTypeIdentifier: UTTypeMovie.identifier]) {
+           [self.result.itemProvider loadDataRepresentationForTypeIdentifier:UTTypeMovie.identifier completionHandler:^(NSData * _Nullable data, NSError * _Nullable error) {
+               NSLog(@"======== result. loadDataRepresentationForTypeIdentifier : %d", data.length);
+               if (data != nil) {
+                       NSFileManager* manager = [NSFileManager defaultManager];
+
+                       NSURL * url = [[manager temporaryDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"%ld.mov", [[NSDate date] timeIntervalSince1970] * 1000]];
+                       NSLog(@"======== result. loadDataRepresentationForTypeIdentifier : %@", url);
+                       [data writeToURL:url atomically:true];
+                       [self completeOperationWithPath:url.path error:nil];
+               } else {
+                   NSLog(@"======== result. video error : %@", error);
+               }
+           }];
     } else {
       FlutterError *flutterError = [FlutterError errorWithCode:@"invalid_source"
                                                        message:@"Invalid image source."
